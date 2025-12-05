@@ -3,6 +3,14 @@ import numpy as np
 import math
 from match import contains_white_point
 
+point_line_dis_max = 16
+point_agent_dis_max = 78
+ellipse_angle_max = 91
+ellipse_angle_min = 87.8
+# ellipse has no precise len formula
+# ellipse_len_diff_max = 500
+ellipse_area_diff_max = 10
+
 def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
     # Iterate through contours and fit ellipses
     for contour in contours:
@@ -13,6 +21,19 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
         if arclen < 50:
             continue
         ellipse = cv2.fitEllipse(contour)
+        [e_a, e_b] = ellipse[1]
+
+        # ellipse_len = math.pi * (3/2*(e_a+e_b) - math.sqrt(e_a*e_b))/2
+        # print("circle len diff:", n, abs(arclen - ellipse_len), arclen, ellipse_len)
+        # if abs(arclen - ellipse_len) > ellipse_len_diff_max:
+        #     continue
+
+        arc_area = cv2.contourArea(contour)
+        ellipse_area = math.pi * e_a * e_b / 4
+        print("circle area diff:", n, abs(arc_area - ellipse_area), arc_area, ellipse_area)
+        if abs(arc_area - ellipse_area) > ellipse_area_diff_max:
+            continue
+
         center_x = ellipse[0][0]
         center_y = ellipse[0][1]
         point_line_dis = abs(a*center_x + b*center_y + c)/math.sqrt(a**2 + b**2)
@@ -21,7 +42,7 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
         cv2.ellipse(img_with_ellipses, ellipse, (0, 255, 0, 255), 2) # Green color, thickness 2
         cv2.imwrite(f"dc/contour_{n}.png", img_with_ellipses)
         print("circle:", n, point_line_dis, point_agent_dis, ellipse, arclen)
-        if point_line_dis > 10 or point_agent_dis < 78 or 91 < ellipse[2] or ellipse[2] < 88:
+        if point_line_dis > point_line_dis_max or point_agent_dis < point_agent_dis_max or ellipse_angle_max < ellipse[2] or ellipse[2] < ellipse_angle_min:
             continue
         # if not contains_white_point(img, int(center_x), int(center_y), wpi):
         #     continue

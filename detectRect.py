@@ -3,6 +3,9 @@ import numpy as np
 import math
 from match import contains_white_point
 
+point_line_dis_max = 20
+point_agent_dis_min = 50
+
 def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
     for contour in contours:
         arclen = cv2.arcLength(contour, True)
@@ -36,7 +39,7 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
             point_line_dis = abs(a*center_x + b*center_y + c)/math.sqrt(a**2 + b**2)
             point_agent_dis = math.sqrt((center_x-ax)**2 + (center_y-ay)**2)
             print("rect:", n, point_line_dis, point_agent_dis, center_x, center_y, arclen)
-            if point_line_dis > 20 or point_agent_dis < 50:
+            if point_line_dis > point_line_dis_max or point_agent_dis < point_agent_dis_min:
                 continue
             # if not contains_white_point(img, int(center_x), int(center_y-3), wpi):
             #     continue

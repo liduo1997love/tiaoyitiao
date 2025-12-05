@@ -34,14 +34,14 @@ def find_target_by_bfs(img, a, b, c, ax, ay, slop):
             continue
         r, v = bfs_color_region(img, [start_x, start_y])
         cv2.imwrite(f'bfs/v_{n_step}.png', r*255)
-        f, x, y = find_param_by_bfs_region(img, r, a, b, c, ax, ay, n_step, wpi)
-        if f:
-            print("use rect")
-            return f, x, y
         f, x, y = find_ellipse_by_bfs_region(img, r, a, b, c, ax, ay, n_step, wpi)
         if f:
             print("use circle")
             return f, x, y
+        f, x, y = find_param_by_bfs_region(img, r, a, b, c, ax, ay, n_step, wpi)
+        if f:
+            print("use rect")
+            return f, x, y       
         vs.append(v)
         print("visited:", len(vs))
     return False, -1, -1
@@ -58,7 +58,7 @@ def jump(slop, ax, ay, tx, ty, a, b, c):
     agent_taget_dis = math.sqrt((ax-real_x)**2 + (ay-real_y)**2)
 
     print("agent_taget_dis:", agent_taget_dis)
-    dis_time_coef = 1.4
+    dis_time_coef = 1.39
     tap_time = int(agent_taget_dis * dis_time_coef)
     command = f"adb shell input swipe 500 500 500 500 {tap_time}"
     print(command)
@@ -81,38 +81,35 @@ def get_agent_tai_dis_jump(in_img):
     c = -ax*slop + ay
 
     # find, tx, ty = find_parallelogram_contours(in_img, a, b, c, agent_center[0], agent_center[1])
-    find, tx, ty = find_target_by_edges(in_img, a, b, c, ax, ay, slop, inter_max=10, slop_diff_max=0.1, oppo_diff_max=15, p_l_dis_max=10)
-    img_copy = in_img.copy()
-    cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-    cv2.imwrite("match/target_by_edge.png", img_copy)
+    find, tx, ty = find_target_by_edges(in_img, a, b, c, ax, ay, slop)
     if find:
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
+        cv2.imwrite("match/target_by_edge.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return
 
     find, tx, ty = find_target_by_bfs(in_img, a, b, c, ax, ay, slop)
-    line_x_len = 500
-    end_point = [ax+line_x_len, ay + int(line_x_len*slop)]
-    in_img_copy = in_img.copy()
-    cv2.circle(in_img_copy, [ax, ay], 2, (0, 255, 0, 255), 2)
-    cv2.line(in_img_copy, [ax, ay], end_point, (0, 255, 0, 255), 2)
-    cv2.circle(in_img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-    cv2.imwrite(f'match/target_by_bfs.png', in_img_copy)
+    
     if find:
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
+        cv2.imwrite(f'match/target_by_bfs.png', img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return
     print("not find target")
     return
 
+
 output_file = f"in/a.png"
 output_dir = os.path.dirname(output_file)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
-
 command = ["adb", "exec-out", "screencap", "-p"]
-
 with open(output_file, "wb") as f:
     subprocess.run(command, stdout=f, check=True)
 
+
 in_img = cv2.imread(f"in/a.png", cv2.IMREAD_UNCHANGED)
 get_agent_tai_dis_jump(in_img)
-# cv2.imwrite("in/should_not_change.png", in_img)
+cv2.imwrite("in/should_not_change.png", in_img)
