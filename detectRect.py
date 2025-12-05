@@ -5,6 +5,12 @@ from match import contains_white_point
 
 point_line_dis_max = 20
 point_agent_dis_min = 50
+try_time = 0
+incr = 5
+
+def set_try_time(t):
+    global try_time
+    try_time = t
 
 def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
     for contour in contours:
@@ -39,7 +45,7 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
             point_line_dis = abs(a*center_x + b*center_y + c)/math.sqrt(a**2 + b**2)
             point_agent_dis = math.sqrt((center_x-ax)**2 + (center_y-ay)**2)
             print("rect:", n, point_line_dis, point_agent_dis, center_x, center_y, arclen)
-            if point_line_dis > point_line_dis_max or point_agent_dis < point_agent_dis_min:
+            if point_line_dis > point_line_dis_max + try_time*incr or point_agent_dis < point_agent_dis_min:
                 continue
             # if not contains_white_point(img, int(center_x), int(center_y-3), wpi):
             #     continue

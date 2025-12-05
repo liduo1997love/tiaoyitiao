@@ -5,7 +5,13 @@ import math
 same_point_dis_max=10
 slop_diff_max=0.1
 opposite_point_diff_max=15
-point_line_dis_max=25.2
+point_line_dis_max=15
+try_time = 0
+incr = 5
+
+def set_try_time(t):
+    global try_time
+    try_time = t
 
 def is_same_point(x1, y1, x2, y2):
     # print("edge is_same_point:", abs(x1 - x2), abs(y1 - y2))
@@ -21,24 +27,27 @@ def check_two_line(i1x, i1y, i2x, i2y, p1x, p1y, p2x, p2y, ax, ay, a, b, c):
         ty = (p1y+p2y)/2
         point_line_dis = abs(a*tx + b*ty + c)/math.sqrt(a**2 + b**2)
         point_agent_dis = math.sqrt((tx-ax)**2 + (ty-ay)**2)
-        print("edge p_l_dis p_a_dis:", point_line_dis, point_agent_dis)
-        if point_line_dis < point_line_dis_max and ty < ay and point_agent_dis > 50:
+        print("edge p_l_dis p_a_dis p_l_dis_li:", point_line_dis, point_agent_dis, point_line_dis_max + try_time*incr)
+        if point_line_dis < point_line_dis_max + try_time*incr and ty < ay and point_agent_dis > 50:
             return True, tx, ty
     return False, -1, -1
 
 def find_target_by_edges(img, a, b, c, ax, ay, slop):
     # Apply Canny edge detection
-    img_copy = img.copy()
     edges = cv2.Canny(img, 100, 200, apertureSize=5) # img, minVal, maxVal
 
     # Display the original and edge-detected images
     cv2.imwrite("edge/edge.png", edges)
 
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 100, minLineLength=100, maxLineGap=10)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 70, minLineLength=80, maxLineGap=10)
+    img_copy = img.copy()
+    img_copy_all_lines = img.copy()
+    print("edge find line num:", len(lines))
     slop_lines = []
     neg_slop_lines = []
     for line in lines:
         x1, y1, x2, y2 = line[0]
+        cv2.line(img_copy_all_lines, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
         if abs(x1 - x2) < 0.01:
             continue
         if min(y1, y2) > ay:
@@ -51,7 +60,9 @@ def find_target_by_edges(img, a, b, c, ax, ay, slop):
         if abs(k + slop) < slop_diff_max:
             cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             neg_slop_lines.append(line[0])
-    cv2.imwrite("edge/lines.png", img_copy)
+    cv2.imwrite("edge/all_lines.png", img_copy_all_lines)
+    cv2.imwrite("edge/valid_lines.png", img_copy)
+    print("edge find valid line num:", len(slop_lines) + len(neg_slop_lines))
 
     if len(slop_lines) == 0 or len(neg_slop_lines) == 0:
         return False, -1, -1

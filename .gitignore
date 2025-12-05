@@ -2,5 +2,8 @@ __pycache__
 edge
 in
 match
+bfs
+dc
+dr
 test.py
 threshold*

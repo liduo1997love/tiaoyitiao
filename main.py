@@ -3,15 +3,16 @@ import os
 import cv2
 import math
 from bfs import bfs_color_region
-from edges import find_target_by_edges
-from match import match, match_gray
-from detectRect import find_param_by_bfs_region
-from detectCircle import find_ellipse_by_bfs_region
+from edges import find_target_by_edges, set_try_time as stt1
+from match import match
+from detectRect import find_param_by_bfs_region, set_try_time as stt2
+from detectCircle import find_ellipse_by_bfs_region, set_try_time as stt3
 
 agent_img = cv2.imread('agent.png', cv2.IMREAD_UNCHANGED)
 wpi = cv2.imread('white_point.png', cv2.IMREAD_UNCHANGED)
 agent_center_x_offset = 38
 agent_center_y_offset = 190
+slop_value = -132.0/226.0
 
 def find_target_by_bfs(img, a, b, c, ax, ay, slop):
     x_step = 10
@@ -71,7 +72,7 @@ def get_agent_tai_dis_jump(in_img):
     print("agent atl abr:", atl, abr)
     ax = atl[0]+agent_center_x_offset
     ay = atl[1]+agent_center_y_offset
-    slop = -132.0/226.0
+    slop = slop_value
     if ax > w/2:
         slop = -slop
     
@@ -87,7 +88,7 @@ def get_agent_tai_dis_jump(in_img):
         cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
         cv2.imwrite("match/target_by_edge.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
-        return
+        return True
 
     find, tx, ty = find_target_by_bfs(in_img, a, b, c, ax, ay, slop)
     
@@ -96,9 +97,9 @@ def get_agent_tai_dis_jump(in_img):
         cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
         cv2.imwrite(f'match/target_by_bfs.png', img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
-        return
+        return True
     print("not find target")
-    return
+    return False
 
 
 output_file = f"in/a.png"
@@ -111,5 +112,11 @@ with open(output_file, "wb") as f:
 
 
 in_img = cv2.imread(f"in/a.png", cv2.IMREAD_UNCHANGED)
-get_agent_tai_dis_jump(in_img)
-cv2.imwrite("in/should_not_change.png", in_img)
+try_time = 1
+while not get_agent_tai_dis_jump(in_img):
+    stt1(try_time)
+    stt2(try_time)
+    stt3(try_time)
+    try_time += 1
+    print("increase try time:", try_time)
+# cv2.imwrite("in/should_not_change.png", in_img)
