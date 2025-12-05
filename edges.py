@@ -39,7 +39,7 @@ def find_target_by_edges(img, a, b, c, ax, ay, slop):
     # Display the original and edge-detected images
     cv2.imwrite("edge/edge.png", edges)
 
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 70, minLineLength=80, maxLineGap=10)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 60, minLineLength=80, maxLineGap=10)
     img_copy = img.copy()
     img_copy_all_lines = img.copy()
     print("edge find line num:", len(lines))
