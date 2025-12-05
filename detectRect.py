@@ -7,7 +7,7 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
     for contour in contours:
         arclen = cv2.arcLength(contour, True)
         if arclen < 80:
-            print(f"rect {n} arclen:", arclen, " < 10")
+            # print(f"rect {n} arclen:", arclen, " < 10")
             continue
         for delta in range(0, 4):
             d_v = delta / 200.0
@@ -36,12 +36,12 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
             point_line_dis = abs(a*center_x + b*center_y + c)/math.sqrt(a**2 + b**2)
             point_agent_dis = math.sqrt((center_x-ax)**2 + (center_y-ay)**2)
             print("rect:", n, point_line_dis, point_agent_dis, center_x, center_y, arclen)
-            if point_agent_dis < 50:
+            if point_line_dis > 20 or point_agent_dis < 50:
                 continue
             # if not contains_white_point(img, int(center_x), int(center_y-3), wpi):
             #     continue
             output_img = img.copy()
-            cv2.drawContours(output_img, [approx], -1, (0, 255, 0), 2)
+            cv2.drawContours(output_img, [approx], -1, (0, 255, 0, 255), 2)
             cv2.imwrite(f"dr/contour_{n}.png", output_img)
             return True, center_x, center_y
     return False, -1, -1

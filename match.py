@@ -19,7 +19,7 @@ def match_gray(main_image, template, name):
     # Perform template matching
     # TM_CCOEFF_NORMED is a common method for normalized cross-correlation
 
-    result = cv2.matchTemplate(main_image_gray, template_gray, cv2.TM_CCOEFF_NORMED, mask=alpha_channel)
+    result = cv2.matchTemplate(main_image_gray, template_gray, cv2.TM_SQDIFF_NORMED, mask=alpha_channel)
 
     # Sum the results to get a combined score
 
@@ -28,15 +28,15 @@ def match_gray(main_image, template, name):
     print(min_val, max_val, min_loc, max_loc)
 
     # Define a threshold for a "good enough" match (adjust as needed)
-    threshold = 0.8
+    threshold = 0.3
 
     # If the maximum correlation value is above the threshold, a match is found
-    if max_val >= threshold :
-        top_left = max_loc
+    if min_val < threshold :
+        top_left = min_loc
         bottom_right = (top_left[0] + w, top_left[1] + h)
 
         # Draw a rectangle around the matched region (optional)
-        cv2.rectangle(main_image, top_left, bottom_right, (0, 255, 0), 2)
+        cv2.rectangle(main_image, top_left, bottom_right, (0, 255, 0, 255), 2)
 
         # Display the result (optional)
         # cv2.imshow('Matched Image', main_image)
@@ -81,8 +81,9 @@ def match(main_image, template, name, threshold):
     # If the maximum correlation value is above the threshold, a match is found
     top_left = min_loc
     bottom_right = (top_left[0] + w, top_left[1] + h)
-    cv2.rectangle(main_image, top_left, bottom_right, (0, 255, 0), 2)
-    cv2.imwrite(f'match/{name}', main_image)
+    main_image_copy = main_image.copy()
+    cv2.rectangle(main_image_copy, top_left, bottom_right, (0, 255, 0, 255), 2)
+    cv2.imwrite(f'match/{name}', main_image_copy)
     if min_val <= threshold :
         print(f"Subimage found {name}.")
         return True, top_left, bottom_right
