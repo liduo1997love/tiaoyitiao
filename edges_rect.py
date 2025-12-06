@@ -38,31 +38,31 @@ def find_target_by_rect_edges(img, a, b, c, ax, ay, slop):
     edges = cv2.Canny(img, 100, 200, apertureSize=5) # img, minVal, maxVal
 
     # Display the original and edge-detected images
-    cv2.imwrite("edges_rect/edge.png", edges)
+    # cv2.imwrite("edges_rect/edge.png", edges)
 
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 60, minLineLength=80, maxLineGap=10)
-    img_copy = img.copy()
-    img_copy_all_lines = img.copy()
+    # img_copy = img.copy()
+    # img_copy_all_lines = img.copy()
     print("edges_rect find line num:", len(lines))
     slop_lines = []
     neg_slop_lines = []
     for line in lines:
         x1, y1, x2, y2 = line[0]
-        cv2.line(img_copy_all_lines, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+        # cv2.line(img_copy_all_lines, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
         if abs(x1 - x2) < 0.01:
             continue
         if min(y1, y2) > ay:
             continue
         k = (y1 - y2)/(x1 - x2)
         if abs(k - slop) < slop_diff_max:
-            cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+            # cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             slop_lines.append(line[0])
             continue
         if abs(k + slop) < slop_diff_max:
-            cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+            # cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             neg_slop_lines.append(line[0])
-    cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
-    cv2.imwrite("edges_rect/valid_lines.png", img_copy)
+    # cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
+    # cv2.imwrite("edges_rect/valid_lines.png", img_copy)
     print("edges_rect find valid line num:", len(slop_lines) + len(neg_slop_lines))
 
     if len(slop_lines) == 0 or len(neg_slop_lines) == 0:

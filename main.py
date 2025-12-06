@@ -35,7 +35,7 @@ def find_target_by_bfs(img, a, b, c, ax, ay, slop):
             n_step += step_add
             continue
         r, v = bfs_color_region(img, [start_x, start_y])
-        cv2.imwrite(f'bfs/v_{n_step}.png', r*255)
+        # cv2.imwrite(f'bfs/v_{n_step}.png', r*255)
         f, x, y = find_ellipse_by_bfs_region(img, r, a, b, c, ax, ay, n_step, wpi)
         if f:
             print("use circle")
@@ -85,27 +85,27 @@ def get_agent_tai_dis_jump(in_img):
     find, tx, ty = find_target_by_rect_edges(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_rect_edges")
-        img_copy = in_img.copy()
-        cv2.circle(img_copy, [int(tx), int(ty)], 2, (255, 0, 0, 255), 2)
-        cv2.imwrite("match/target.png", img_copy)
+        # img_copy = in_img.copy()
+        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (255, 0, 0, 255), 2)
+        # cv2.imwrite("match/target.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
     
     find, tx, ty = find_target_by_circle_edges(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_circle_edges")
-        img_copy = in_img.copy()
-        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 255, 0, 255), 2)
-        cv2.imwrite("match/target.png", img_copy)
+        # img_copy = in_img.copy()
+        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 255, 0, 255), 2)
+        # cv2.imwrite("match/target.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
 
     find, tx, ty = find_target_by_bfs(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_bfs")
-        img_copy = in_img.copy()
-        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-        cv2.imwrite(f'match/target.png', img_copy)
+        # img_copy = in_img.copy()
+        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
+        # cv2.imwrite(f'match/target.png', img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
     print("not find target")

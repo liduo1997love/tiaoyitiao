@@ -10,5 +10,5 @@ rm -rf edges_circle/*
 rm -rf bfs/*
 rm -rf dc/*
 rm -rf dr/*
-rm -rf match/*
+# rm -rf match/*
 python main.py

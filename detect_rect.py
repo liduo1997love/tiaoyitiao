@@ -49,9 +49,9 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi):
                 continue
             # if not contains_white_point(img, int(center_x), int(center_y-3), wpi):
             #     continue
-            output_img = img.copy()
-            cv2.drawContours(output_img, [approx], -1, (0, 255, 0, 255), 2)
-            cv2.imwrite(f"dr/contour_{n}.png", output_img)
+            # output_img = img.copy()
+            # cv2.drawContours(output_img, [approx], -1, (0, 255, 0, 255), 2)
+            # cv2.imwrite(f"dr/contour_{n}.png", output_img)
             return True, center_x, center_y
     return False, -1, -1
 

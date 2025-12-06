@@ -43,7 +43,7 @@ def match_gray(main_image, template, name):
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         print(f"Subimage found {name}")
-        success = cv2.imwrite(f'match/{name}', main_image)
+        cv2.imwrite(f'match/{name}', main_image)
         return True, top_left, bottom_right
     else:
         # print("Subimage not found.")
@@ -81,9 +81,9 @@ def match(main_image, template, name, threshold):
     # If the maximum correlation value is above the threshold, a match is found
     top_left = min_loc
     bottom_right = (top_left[0] + w, top_left[1] + h)
-    main_image_copy = main_image.copy()
-    cv2.rectangle(main_image_copy, top_left, bottom_right, (0, 255, 0, 255), 2)
-    cv2.imwrite(f'match/{name}', main_image_copy)
+    # main_image_copy = main_image.copy()
+    # cv2.rectangle(main_image_copy, top_left, bottom_right, (0, 255, 0, 255), 2)
+    # cv2.imwrite(f'match/{name}', main_image_copy)
     if min_val <= threshold :
         print(f"Subimage found {name}.")
         return True, top_left, bottom_right

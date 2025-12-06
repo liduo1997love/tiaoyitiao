@@ -19,7 +19,7 @@ def set_try_time(t):
 
 def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi, region_area):
     # Iterate through contours and fit ellipses
-    nn = 0
+    nn = -1
     for contour in contours:
         nn+=1
         # Filter out small contours that cannot form an ellipse
@@ -29,9 +29,10 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi, region_area):
         if arclen < 50:
             continue
         ellipse = cv2.fitEllipse(contour)
-        img_with_ellipses = img.copy()
-        cv2.ellipse(img_with_ellipses, ellipse, (0, 255, 0, 255), 2) # Green color, thickness 2
-        cv2.imwrite(f"dc/contour_{n}_{nn}.png", img_with_ellipses)
+        # img_with_ellipses = img.copy()
+        # cv2.ellipse(img_with_ellipses, ellipse, (0, 255, 0, 255), 2)
+        # cv2.drawContours(img_with_ellipses, contours, nn, (0, 0, 255, 255), 2)
+        # cv2.imwrite(f"dc/contour_{n}_{nn}.png", img_with_ellipses)
         [e_a, e_b] = ellipse[1]
         ellipse_len = math.pi * (3/2*(e_a+e_b) - math.sqrt(e_a*e_b))/2
         print("circle len diff:", n, abs(arclen - ellipse_len), arclen, ellipse_len)

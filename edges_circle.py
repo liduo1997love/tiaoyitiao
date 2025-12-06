@@ -15,9 +15,9 @@ def set_try_time(t):
 
 def find_target_by_circle_edges(img, a, b, c, ax, ay, slop):
     edges = cv2.Canny(img, 100, 200)
-    cv2.imwrite("edges_circle/edge.png", edges)
-    contours, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    n = 0
+    # cv2.imwrite("edges_circle/Canny.png", edges)
+    contours, _ = cv2.findContours(edges.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    n = -1
     for contour in contours:
         n += 1
         if len(contour) < 5:
@@ -35,9 +35,10 @@ def find_target_by_circle_edges(img, a, b, c, ax, ay, slop):
         if center_y > ay:
             continue
 
-        img_copy = img.copy()
-        cv2.ellipse(img_copy, ellipse, (0, 255, 0), 2) # Draw ellipse in green
-        cv2.imwrite(f"edges_circle/ellipse_{n}.png", img_copy)
+        # img_copy = img.copy()
+        # cv2.ellipse(img_copy, ellipse, (0, 255, 0, 255), 2) # Draw ellipse in green
+        # cv2.drawContours(img_copy, contours, n, (0, 0, 255, 255), 2)
+        # cv2.imwrite(f"edges_circle/contour_{n}.png", img_copy)
         point_line_dis = abs(a*center_x + b*center_y + c)/math.sqrt(a**2 + b**2)
         point_agent_dis = math.sqrt((center_x-ax)**2 + (center_y-ay)**2)
         print("edges_circle:", n, point_line_dis, point_agent_dis, ellipse, ellipse_len)
