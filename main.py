@@ -60,7 +60,7 @@ def jump(slop, ax, ay, tx, ty, a, b, c):
     agent_taget_dis = math.sqrt((ax-real_x)**2 + (ay-real_y)**2)
 
     print("agent_taget_dis:", agent_taget_dis)
-    dis_time_coef = 1.39
+    dis_time_coef = 1.38
     tap_time = int(agent_taget_dis * dis_time_coef)
     command = f"adb shell input swipe 500 500 500 500 {tap_time}"
     print(command)
@@ -69,7 +69,7 @@ def jump(slop, ax, ay, tx, ty, a, b, c):
 def get_agent_tai_dis_jump(in_img):
     h, w = in_img.shape[:2]
     print("in_img w h:", w, h)
-    find, atl, abr = match(in_img, agent_img, "agent.png", 0.18)
+    find, atl, abr = match(in_img, agent_img, "agent.png", 0.181)
     print("agent atl abr:", atl, abr)
     ax = atl[0]+agent_center_x_offset
     ay = atl[1]+agent_center_y_offset
@@ -85,27 +85,27 @@ def get_agent_tai_dis_jump(in_img):
     find, tx, ty = find_target_by_rect_edges(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_rect_edges")
-        # img_copy = in_img.copy()
-        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (255, 0, 0, 255), 2)
-        # cv2.imwrite("match/target.png", img_copy)
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (255, 0, 0, 255), 2)
+        cv2.imwrite("match/target.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
     
     find, tx, ty = find_target_by_circle_edges(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_circle_edges")
-        # img_copy = in_img.copy()
-        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 255, 0, 255), 2)
-        # cv2.imwrite("match/target.png", img_copy)
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 255, 0, 255), 2)
+        cv2.imwrite("match/target.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
 
     find, tx, ty = find_target_by_bfs(in_img, a, b, c, ax, ay, slop)
     if find:
         print("find_target_by_bfs")
-        # img_copy = in_img.copy()
-        # cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-        # cv2.imwrite(f'match/target.png', img_copy)
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
+        cv2.imwrite(f'match/target.png', img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
     print("not find target")
