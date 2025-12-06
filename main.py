@@ -2,11 +2,12 @@ import subprocess
 import os
 import cv2
 import math
-from bfs import bfs_color_region
-from edges import find_target_by_edges, set_try_time as stt1
 from match import match
-from detectRect import find_param_by_bfs_region, set_try_time as stt2
-from detectCircle import find_ellipse_by_bfs_region, set_try_time as stt3
+from bfs import bfs_color_region
+from edges_rect import find_target_by_rect_edges, set_try_time as stt1
+from edges_circle import find_target_by_circle_edges, set_try_time as stt2
+from detect_rect import find_param_by_bfs_region, set_try_time as stt3
+from detect_circle import find_ellipse_by_bfs_region, set_try_time as stt4
 
 agent_img = cv2.imread('agent.png', cv2.IMREAD_UNCHANGED)
 wpi = cv2.imread('white_point.png', cv2.IMREAD_UNCHANGED)
@@ -81,21 +82,30 @@ def get_agent_tai_dis_jump(in_img):
     b = -1
     c = -ax*slop + ay
 
-    # find, tx, ty = find_parallelogram_contours(in_img, a, b, c, agent_center[0], agent_center[1])
-    find, tx, ty = find_target_by_edges(in_img, a, b, c, ax, ay, slop)
+    find, tx, ty = find_target_by_rect_edges(in_img, a, b, c, ax, ay, slop)
     if find:
+        print("find_target_by_rect_edges")
         img_copy = in_img.copy()
-        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-        cv2.imwrite("match/target_by_edge.png", img_copy)
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (255, 0, 0, 255), 2)
+        cv2.imwrite("match/target.png", img_copy)
+        jump(slop, ax, ay, tx, ty, a, b, c)
+        return True
+    
+    find, tx, ty = find_target_by_circle_edges(in_img, a, b, c, ax, ay, slop)
+    if find:
+        print("find_target_by_circle_edges")
+        img_copy = in_img.copy()
+        cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 255, 0, 255), 2)
+        cv2.imwrite("match/target.png", img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
 
     find, tx, ty = find_target_by_bfs(in_img, a, b, c, ax, ay, slop)
-    
     if find:
+        print("find_target_by_bfs")
         img_copy = in_img.copy()
         cv2.circle(img_copy, [int(tx), int(ty)], 2, (0, 0, 255, 255), 2)
-        cv2.imwrite(f'match/target_by_bfs.png', img_copy)
+        cv2.imwrite(f'match/target.png', img_copy)
         jump(slop, ax, ay, tx, ty, a, b, c)
         return True
     print("not find target")
@@ -117,6 +127,7 @@ while not get_agent_tai_dis_jump(in_img):
     stt1(try_time)
     stt2(try_time)
     stt3(try_time)
+    stt4(try_time)
     try_time += 1
     print("increase try time:", try_time)
 # cv2.imwrite("in/should_not_change.png", in_img)
