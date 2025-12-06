@@ -35,7 +35,7 @@ def find_target_by_bfs(img, a, b, c, ax, ay, slop):
             n_step += step_add
             continue
         r, v = bfs_color_region(img, [start_x, start_y])
-        cv2.imwrite(f'bfs/v_{n_step}.png', r*255)
+        # cv2.imwrite(f'bfs/v_{n_step}.png', r*255)
         f, x, y = find_ellipse_by_bfs_region(img, r, a, b, c, ax, ay, n_step, wpi)
         if f:
             print("use circle")
@@ -60,7 +60,7 @@ def jump(slop, ax, ay, tx, ty, a, b, c):
     agent_taget_dis = math.sqrt((ax-real_x)**2 + (ay-real_y)**2)
 
     print("agent_taget_dis:", agent_taget_dis)
-    dis_time_coef = 1.39
+    dis_time_coef = 1.38
     tap_time = int(agent_taget_dis * dis_time_coef)
     command = f"adb shell input swipe 500 500 500 500 {tap_time}"
     print(command)

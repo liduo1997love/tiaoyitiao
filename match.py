@@ -43,7 +43,7 @@ def match_gray(main_image, template, name):
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         print(f"Subimage found {name}")
-        success = cv2.imwrite(f'match/{name}', main_image)
+        cv2.imwrite(f'match/{name}', main_image)
         return True, top_left, bottom_right
     else:
         # print("Subimage not found.")

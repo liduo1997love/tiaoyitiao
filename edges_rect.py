@@ -24,6 +24,9 @@ def check_two_line(i1x, i1y, i2x, i2y, p1x, p1y, p2x, p2y, ax, ay, a, b, c):
     same_y = abs(p1y-p2y) < opposite_point_diff_max
     # print("edges_rect check_two_line:", same_p, abs(p1x-p2x), same_x, abs(p1y-p2y), same_y)
     if same_p and (same_x or same_y):
+        # shape v cause error match, shape <, ^, > is save
+        if i1y > p1y and i1y > p2y:
+            return False, -1, -1
         tx = (p1x+p2x)/2
         ty = (p1y+p2y)/2
         point_line_dis = abs(a*tx + b*ty + c)/math.sqrt(a**2 + b**2)
@@ -34,35 +37,36 @@ def check_two_line(i1x, i1y, i2x, i2y, p1x, p1y, p2x, p2y, ax, ay, a, b, c):
     return False, -1, -1
 
 def find_target_by_rect_edges(img, a, b, c, ax, ay, slop):
-    # Apply Canny edge detection
     edges = cv2.Canny(img, 100, 200, apertureSize=5) # img, minVal, maxVal
-
-    # Display the original and edge-detected images
-    cv2.imwrite("edges_rect/edge.png", edges)
-
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 60, minLineLength=80, maxLineGap=10)
-    img_copy = img.copy()
-    img_copy_all_lines = img.copy()
+    # cv2.imwrite("edges_rect/edge.png", edges)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 80, minLineLength=80, maxLineGap=10)
+    # img_copy = img.copy()
+    # img_copy_all_lines = img.copy()
     print("edges_rect find line num:", len(lines))
     slop_lines = []
     neg_slop_lines = []
     for line in lines:
         x1, y1, x2, y2 = line[0]
-        cv2.line(img_copy_all_lines, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+        # cv2.line(img_copy_all_lines, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
         if abs(x1 - x2) < 0.01:
             continue
         if min(y1, y2) > ay:
             continue
         k = (y1 - y2)/(x1 - x2)
         if abs(k - slop) < slop_diff_max:
-            cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+            # cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             slop_lines.append(line[0])
             continue
         if abs(k + slop) < slop_diff_max:
-            cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
+            # cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             neg_slop_lines.append(line[0])
+<<<<<<< HEAD
     cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
     cv2.imwrite("edges_rect/valid_lines.png", img_copy)
+=======
+    # cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
+    # cv2.imwrite("edges_rect/valid_lines.png", img_copy)
+>>>>>>> not_save_img
     print("edges_rect find valid line num:", len(slop_lines) + len(neg_slop_lines))
 
     if len(slop_lines) == 0 or len(neg_slop_lines) == 0:
