@@ -10,6 +10,7 @@ ellipse_angle_min = 87.8
 # ellipse has no precise len formula
 ellipse_len_diff_max = 70
 ellipse_area_diff_min_ratio = 0.4
+ellipse_area_min = 20
 try_time = 0
 incr = 5
 
@@ -41,6 +42,8 @@ def find_contours_center(img, contours, a, b, c, ax, ay, n, wpi, region_area):
 
         # arc_area = cv2.contourArea(contour)
         ellipse_area = math.pi * e_a * e_b / 4
+        if ellipse_area < ellipse_area_min:
+            continue
         print("circle area ratio:", n, region_area/ellipse_area, region_area, ellipse_area)
         if region_area/ellipse_area < ellipse_area_diff_min_ratio:
             continue

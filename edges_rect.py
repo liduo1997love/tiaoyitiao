@@ -60,13 +60,8 @@ def find_target_by_rect_edges(img, a, b, c, ax, ay, slop):
         if abs(k + slop) < slop_diff_max:
             # cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0, 255), 2)
             neg_slop_lines.append(line[0])
-<<<<<<< HEAD
-    cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
-    cv2.imwrite("edges_rect/valid_lines.png", img_copy)
-=======
     # cv2.imwrite("edges_rect/all_lines.png", img_copy_all_lines)
     # cv2.imwrite("edges_rect/valid_lines.png", img_copy)
->>>>>>> not_save_img
     print("edges_rect find valid line num:", len(slop_lines) + len(neg_slop_lines))
 
     if len(slop_lines) == 0 or len(neg_slop_lines) == 0:

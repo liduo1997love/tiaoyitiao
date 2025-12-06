@@ -64,7 +64,7 @@ def jump(slop, ax, ay, tx, ty, a, b, c):
     tap_time = int(agent_taget_dis * dis_time_coef)
     command = f"adb shell input swipe 500 500 500 500 {tap_time}"
     print(command)
-    # subprocess.run(command.split(" "), check=True)
+    subprocess.run(command.split(" "), check=True)
 
 def get_agent_tai_dis_jump(in_img):
     h, w = in_img.shape[:2]
